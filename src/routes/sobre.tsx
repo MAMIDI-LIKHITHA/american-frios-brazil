@@ -36,10 +36,6 @@ const NUMBERS = [
   { icon: Truck, label: "Delivery rápido e seguro" },
 ];
 
-export default function _unused() {
-  return null;
-}
-
 function SobrePage() {
   return (
     <div className="container-page py-14">
