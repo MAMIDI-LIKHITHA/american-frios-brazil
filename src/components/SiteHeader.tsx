@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 
 import logo from "@/assets/logo.png.asset.json";
 import { WhatsAppButton } from "./WhatsAppButton";
+import { CartButton } from "./CartDrawer";
+
 
 const NAV = [
   { to: "/", label: "Início" },
