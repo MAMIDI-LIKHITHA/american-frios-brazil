@@ -27,9 +27,6 @@ export type Category = {
 };
 
 // NOTA INTERNA: todos os preços abaixo são PLACEHOLDER para demonstração do carrinho.
-const raw: Omit<Category, "items" | "products">[] & { products?: never }[] = [];
-void raw;
-
 function cat(
   slug: string,
   name: string,
