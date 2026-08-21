@@ -31,23 +31,22 @@ function ProdutosPage() {
         Nossos produtos: frios, embutidos, suínos, frangos e espetinhos
       </h1>
       <p className="mt-4 max-w-2xl text-muted-foreground">
-        Trabalhamos com atacado e varejo em Palmas. Nossa tabela de preços está sendo
-        finalizada — por enquanto, consulte valores e disponibilidade direto pelo WhatsApp.
+        Escolha os itens, ajuste as quantidades e finalize o pedido aqui no site — com entrega
+        em Palmas ou retirada em uma das nossas lojas.
       </p>
       <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
-        <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-          Em breve
-        </span>
+        <ModeToggle />
         <p className="text-sm text-foreground/80">
-          Catálogo com preços em breve. Fale com nossa equipe para orçamentos de atacado.
+          Preços de atacado aparecem automaticamente ao atingir a quantidade mínima de cada item.
         </p>
       </div>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
         {CATEGORIES.map((c) => (
-          <CategoryCard key={c.name} category={c} />
+          <CategoryCard key={c.name} category={c} showProducts />
         ))}
       </div>
+
 
       <section className="mt-14 rounded-2xl bg-charcoal px-6 py-12 text-center text-cream">
         <h2 className="font-display text-2xl md:text-3xl">
