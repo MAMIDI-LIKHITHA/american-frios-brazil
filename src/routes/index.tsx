@@ -10,7 +10,7 @@ import { STORES, localBusinessSchema } from "@/lib/site";
 import heroImg from "@/assets/loja-interior.jpg";
 
 const description =
-  "América Frios: atacado e varejo de frios, embutidos, suínos, frangos e espetinhos em Palmas - TO. 3 lojas, delivery rápido e pedidos pelo WhatsApp.";
+  "América Frios: atacado e varejo de frios, embutidos, suínos, frangos e espetinhos em Palmas - TO. 2 lojas, delivery rápido e pedidos pelo WhatsApp.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 
 const BADGES = [
   { icon: Star, label: "4,5 no Google (25+ avaliações)" },
-  { icon: Store, label: "3 lojas em Palmas" },
+  { icon: Store, label: "2 lojas em Palmas" },
   { icon: Users, label: "+20 mil seguidores no Instagram" },
   { icon: Truck, label: "Delivery rápido e seguro" },
 ];
@@ -46,15 +46,15 @@ const REASONS = [
   },
   {
     title: "Produtos sempre frescos e em estoque",
-    text: "Reposição constante de frios, embutidos, suínos e frangos nas três lojas.",
+    text: "Reposição constante de frios, embutidos, suínos e frangos nas duas lojas.",
   },
   {
     title: "Atendimento próximo e atencioso",
     text: "Respondemos rápido no WhatsApp e ajudamos você a montar o pedido.",
   },
   {
-    title: "3 lojas em Palmas",
-    text: "305 Sul, 903 Sul e Taquaralto — sempre tem uma unidade perto de você.",
+    title: "2 lojas em Palmas",
+    text: "305 Sul e 903 Sul — sempre tem uma unidade perto de você.",
   },
 ];
 
@@ -174,7 +174,7 @@ function Index() {
         <div className="container-page">
           <p className="text-sm font-bold tracking-widest text-primary uppercase">Nossas lojas</p>
           <h2 className="mt-2 font-display text-2xl md:text-3xl">Encontre a loja mais próxima</h2>
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
             {STORES.map((s) => (
               <StoreCard key={s.slug} store={s} />
             ))}
