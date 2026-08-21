@@ -13,6 +13,10 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { CartDrawer } from "../components/CartDrawer";
+import { CartProvider } from "../lib/cart";
+import { Toaster } from "../components/ui/sonner";
+
 
 function NotFoundComponent() {
   return (
