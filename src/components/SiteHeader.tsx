@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 
 import logo from "@/assets/logo.png.asset.json";
 import { WhatsAppButton } from "./WhatsAppButton";
+import { CartButton } from "./CartDrawer";
+
 
 const NAV = [
   { to: "/", label: "Início" },
@@ -51,6 +53,8 @@ export function SiteHeader() {
           <WhatsAppButton size="sm" className="hidden sm:inline-flex">
             Pedir no WhatsApp
           </WhatsAppButton>
+          <CartButton />
+
           <button
             type="button"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
