@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { CategoryCard } from "@/components/CategoryCard";
+import { ModeToggle } from "@/components/ModeToggle";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { CATEGORIES } from "@/lib/products";
 
 const description =
-  "Catálogo América Frios Palmas: frios, embutidos, suínos, frangos e espetinhos no atacado e varejo. Preços em breve — peça já pelo WhatsApp.";
+  "Catálogo América Frios Palmas: frios, embutidos, suínos, frangos e espetinhos no atacado e varejo. Monte seu pedido online com entrega ou retirada.";
 
 export const Route = createFileRoute("/produtos")({
   head: () => ({
