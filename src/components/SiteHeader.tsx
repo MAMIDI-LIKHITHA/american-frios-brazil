@@ -51,6 +51,8 @@ export function SiteHeader() {
           <WhatsAppButton size="sm" className="hidden sm:inline-flex">
             Pedir no WhatsApp
           </WhatsAppButton>
+          <CartButton />
+
           <button
             type="button"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
