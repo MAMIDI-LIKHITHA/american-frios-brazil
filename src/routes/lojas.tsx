@@ -5,7 +5,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { STORES, localBusinessSchema } from "@/lib/site";
 
 const description =
-  "Nossas 3 lojas em Palmas - TO: 305 Sul (matriz), 903 Sul e Taquaralto. Frios, embutidos e carnes no atacado e varejo, com mapa e rota.";
+  "Nossas 2 lojas em Palmas - TO: 305 Sul (matriz) e 903 Sul. Frios, embutidos e carnes no atacado e varejo, com mapa e rota.";
 
 export const Route = createFileRoute("/lojas")({
   head: () => ({
@@ -32,7 +32,7 @@ function LojasPage() {
     <div className="container-page py-14">
       <p className="text-sm font-bold tracking-widest text-primary uppercase">Onde estamos</p>
       <h1 className="mt-2 max-w-3xl font-display text-3xl md:text-4xl">
-        3 lojas América Frios em Palmas - TO
+        2 lojas América Frios em Palmas - TO
       </h1>
       <p className="mt-4 max-w-2xl text-muted-foreground">
         Escolha a unidade mais próxima, veja o mapa e traçe a rota. Delivery rápido e seguro
@@ -40,7 +40,6 @@ function LojasPage() {
       </p>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
-        {/* NOTA INTERNA: confirmar horários por loja e o status atual da Loja Taquaralto antes de publicar. */}
         {STORES.map((s) => (
           <StoreCard key={s.slug} store={s} />
         ))}
