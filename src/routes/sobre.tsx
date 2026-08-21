@@ -11,7 +11,7 @@ import espetinhos from "@/assets/espetinhos.jpg";
 import embutidos from "@/assets/embutidos.jpg";
 
 const description =
-  "Conheça a América Frios: atacado e varejo de frios, embutidos, suínos e frangos em Palmas - TO, com 3 lojas, 4,5★ no Google e +20 mil seguidores.";
+  "Conheça a América Frios: atacado e varejo de frios, embutidos, suínos e frangos em Palmas - TO, com 2 lojas, 4,5★ no Google e +20 mil seguidores.";
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/sobre")({
 });
 
 const NUMBERS = [
-  { icon: Store, label: "3 lojas em Palmas" },
+  { icon: Store, label: "2 lojas em Palmas" },
   { icon: Star, label: "4,5★ no Google (25+ avaliações)" },
   { icon: Users, label: "+20 mil seguidores no Instagram" },
   { icon: Truck, label: "Delivery rápido e seguro" },
@@ -53,9 +53,9 @@ function SobrePage() {
             restaurantes e revendedores que precisam de volume com preço justo.
           </p>
           <p>
-            Hoje somos <strong className="text-foreground">3 lojas</strong> em pontos
-            estratégicos da cidade — 305 Sul (nossa matriz), 903 Sul e Taquaralto — o que nos
-            permite manter estoque constante e entregar rápido em toda Palmas.
+            Hoje somos <strong className="text-foreground">2 lojas</strong> em pontos
+            estratégicos da cidade — 305 Sul (nossa matriz) e 903 Sul — o que nos permite
+            manter estoque constante e entregar rápido em toda Palmas.
           </p>
           <p>
             Essa presença é resultado da confiança de quem compra com a gente todos os dias:
