@@ -52,19 +52,8 @@ export const STORES: Store[] = [
     mapQuery: "Alameda 11, Quadra 903 Sul, Plano Diretor Sul, Palmas - TO, 77017-282",
     hours: "8h às 19h, todos os dias",
   },
-  {
-    slug: "taquaralto",
-    name: "Loja Taquaralto",
-    street: "Rua T08, R. Santa Fé, Quadra 10, Lote 09",
-    district: "Taquaralto",
-    city: "Palmas - TO",
-    postal: "77064-030",
-    mapQuery:
-      "Rua T08, Rua Santa Fé, Quadra 10, Lote 09, Taquaralto, Palmas - TO, 77064-030",
-    hours: "8h às 19h, todos os dias",
-    verifyStatus: true,
-  },
 ];
+
 
 export const mapEmbed = (query: string) =>
   `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
