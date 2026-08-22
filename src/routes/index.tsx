@@ -119,8 +119,10 @@ function Index() {
           </Link>
         </div>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Tabela de preços em breve. Consulte valores e disponibilidade pelo WhatsApp.
+          Monte seu pedido online: escolha os produtos, defina entrega ou retirada e finalize em
+          poucos cliques.
         </p>
+
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((c) => (
             <CategoryCard key={c.name} category={c} />
