@@ -140,53 +140,46 @@ export const createOrder = createServerFn({ method: "POST" })
     }
 
     // Pix NÃO marca o pedido como pago: todo pedido nasce com status "new".
-    let created: { id: string; order_number: string } | null = null;
+    // Pedido + itens são gravados numa única transação (função place_order).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const itemsPayload = lines.map((l) => ({
+      product_id: l.productId,
+      product_name: l.name,
+      quantity: l.qty,
+      unit_price: l.unitPrice,
+      subtotal: l.subtotal,
+    }));
+
+    let created: { order_id: string; order_number: string } | null = null;
     let lastError: string | null = null;
     for (let attempt = 0; attempt < 5 && !created; attempt++) {
-      const number = orderNumber();
-      const id = crypto.randomUUID();
-      const { error } = await supabase
-        .from("orders")
-        .insert({
-          id,
-          order_number: number,
+      const { data: rows, error } = await supabaseAdmin.rpc("place_order", {
+        p_order: {
+          order_number: orderNumber(),
           customer_name: customer.name,
           customer_phone: customer.phone,
           order_type: mode === "atacado" ? "Atacado" : "Varejo",
           fulfillment_type: customer.fulfillment === "retirada" ? "Pickup" : "Delivery",
           store_id: storeId,
-          delivery_address: customer.fulfillment === "entrega" ? (customer.address ?? null) : null,
+          delivery_address: customer.fulfillment === "entrega" ? (customer.address ?? "") : "",
           payment_method: customer.payment,
           subtotal,
           delivery_fee: deliveryFee,
           total,
-          status: "new",
-          notes: customer.note || null,
-        });
+          notes: customer.note ?? "",
+        },
+        p_items: itemsPayload,
+      });
 
-      if (!error) created = { id, order_number: number };
-      else lastError = error.message;
+      const row = Array.isArray(rows) ? rows[0] : null;
+      if (!error && row) created = row;
+      else lastError = error?.message ?? "sem retorno";
     }
 
     if (!created) {
       console.error("Falha ao criar pedido:", lastError);
       return { ok: false, message: "Não foi possível registrar o pedido. Tente novamente." };
-    }
-
-    const { error: itemsError } = await supabase.from("order_items").insert(
-      lines.map((l) => ({
-        order_id: created.id,
-        product_id: l.productId,
-        product_name: l.name,
-        quantity: l.qty,
-        unit_price: l.unitPrice,
-        subtotal: l.subtotal,
-      })),
-    );
-
-    if (itemsError) {
-      console.error("Falha ao criar itens do pedido:", itemsError.message);
-      return { ok: false, message: "Não foi possível registrar os itens do pedido." };
     }
 
     return {
