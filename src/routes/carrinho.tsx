@@ -15,6 +15,7 @@ import {
   type CheckoutData,
   type Order,
 } from "@/lib/order";
+import { persistOrder } from "@/lib/orders-db";
 import { STORES } from "@/lib/site";
 
 const description =
