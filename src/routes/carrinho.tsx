@@ -70,6 +70,7 @@ function CarrinhoPage() {
     }
     setErrors({});
     const created = buildOrder(lines, mode, parsed.data);
+    void persistOrder(created);
     setOrder(created);
     clear();
     window.scrollTo({ top: 0, behavior: "smooth" });
