@@ -165,7 +165,7 @@ export const createOrder = createServerFn({ method: "POST" })
         });
 
       if (!error) created = { id, order_number: number };
-      else lastError = error.message;
+      else lastError = JSON.stringify({ m: error.message, d: error.details, h: error.hint, c: error.code, keyKind: (process.env["SUPABASE_PUBLISHABLE_KEY"] ?? "").slice(0, 6) });
     }
 
     if (!created) {
