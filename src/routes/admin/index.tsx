@@ -401,11 +401,21 @@ function OrderDetail({
               ))}
             </ul>
           )}
-          <div className="flex items-center justify-between border-t border-border p-3">
-            <span className="text-sm font-semibold">Total</span>
-            <span className="font-display text-lg font-bold tabular-nums">
-              {brl(Number(order.total))}
-            </span>
+          <div className="border-t border-border p-3 text-sm">
+            <div className="flex items-center justify-between text-muted-foreground">
+              <span>Subtotal</span>
+              <span className="tabular-nums">{brl(Number(order.subtotal))}</span>
+            </div>
+            <div className="mt-1 flex items-center justify-between text-muted-foreground">
+              <span>Taxa de entrega</span>
+              <span className="tabular-nums">{brl(Number(order.delivery_fee))}</span>
+            </div>
+            <div className="mt-2 flex items-center justify-between">
+              <span className="font-semibold">Total</span>
+              <span className="font-display text-lg font-bold tabular-nums">
+                {brl(Number(order.total))}
+              </span>
+            </div>
           </div>
         </div>
 
