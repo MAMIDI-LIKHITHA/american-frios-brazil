@@ -58,12 +58,20 @@ function AdminHomePage() {
             {email ? `Conectado como ${email}` : "Área restrita da equipe América Frios."}
           </p>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
-        >
-          Sair
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate({ to: "/admin/change-password" })}
+            className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+          >
+            Alterar senha
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+          >
+            Sair
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 rounded-2xl border border-border bg-card p-6">
