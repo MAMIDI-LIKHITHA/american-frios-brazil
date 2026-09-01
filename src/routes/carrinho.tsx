@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useState } from "react";
 import { CheckCircle2, Trash2 } from "lucide-react";
 
@@ -6,16 +8,15 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { QuantityStepper } from "@/components/QuantityStepper";
 import { WaIcon } from "@/components/WhatsAppButton";
 import { useCart } from "@/lib/cart";
+import { createOrder } from "@/lib/checkout.functions";
 import {
   PAYMENT_METHODS,
   brl,
-  buildOrder,
   checkoutSchema,
   orderWhatsAppLink,
   type CheckoutData,
   type Order,
 } from "@/lib/order";
-import { persistOrder } from "@/lib/orders-db";
 import { STORES } from "@/lib/site";
 
 const description =
@@ -304,8 +305,12 @@ function CarrinhoPage() {
               />
             </Field>
 
-            <button type="submit" className="btn-base btn-brand mt-5 w-full">
-              Enviar pedido · {brl(total)}
+            <button
+              type="submit"
+              disabled={sending}
+              className="btn-base btn-brand mt-5 w-full disabled:opacity-70"
+            >
+              {sending ? "Enviando pedido…" : `Enviar pedido · ${brl(total)}`}
             </button>
           </form>
         </div>
