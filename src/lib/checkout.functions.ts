@@ -144,9 +144,11 @@ export const createOrder = createServerFn({ method: "POST" })
     let lastError: string | null = null;
     for (let attempt = 0; attempt < 5 && !created; attempt++) {
       const number = orderNumber();
-      const { data: row, error } = await supabase
+      const id = crypto.randomUUID();
+      const { error } = await supabase
         .from("orders")
         .insert({
+          id,
           order_number: number,
           customer_name: customer.name,
           customer_phone: customer.phone,
@@ -160,12 +162,10 @@ export const createOrder = createServerFn({ method: "POST" })
           total,
           status: "new",
           notes: customer.note || null,
-        })
-        .select("id, order_number")
-        .single();
+        });
 
-      if (row) created = row;
-      else lastError = error?.message ?? "erro desconhecido";
+      if (!error) created = { id, order_number: number };
+      else lastError = error.message;
     }
 
     if (!created) {
