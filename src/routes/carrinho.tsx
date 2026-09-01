@@ -52,11 +52,13 @@ function CarrinhoPage() {
   const [form, setForm] = useState<CheckoutData>(emptyForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [order, setOrder] = useState<Order | null>(null);
+  const [sending, setSending] = useState(false);
+  const submitOrder = useServerFn(createOrder);
 
   const set = <K extends keyof CheckoutData>(key: K, value: CheckoutData[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = checkoutSchema.safeParse(form);
     if (!parsed.success) {
@@ -69,11 +71,47 @@ function CarrinhoPage() {
       return;
     }
     setErrors({});
-    const created = buildOrder(lines, mode, parsed.data);
-    void persistOrder(created);
-    setOrder(created);
-    clear();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const customer = parsed.data;
+    setSending(true);
+    try {
+      const result = await submitOrder({
+        data: {
+          mode,
+          items: lines.map((l) => ({ slug: l.product.id, qty: l.qty })),
+          customer: {
+            name: customer.name,
+            phone: customer.phone,
+            fulfillment: customer.fulfillment,
+            address: customer.address || undefined,
+            storeName:
+              STORES.find((s) => s.slug === customer.storeSlug)?.name || undefined,
+            payment: customer.payment,
+            note: customer.note || undefined,
+          },
+        },
+      });
+
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+
+      // Pedido gravado com sucesso no banco — só então confirmamos e limpamos o carrinho.
+      setOrder({
+        number: result.orderNumber,
+        createdAt: new Date().toISOString(),
+        mode,
+        total: result.total,
+        items: result.items,
+        customer,
+      });
+      clear();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      toast.error("Não foi possível enviar o pedido. Verifique sua conexão e tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (order) return <Confirmation order={order} />;
