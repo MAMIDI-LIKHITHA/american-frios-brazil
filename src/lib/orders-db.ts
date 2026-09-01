@@ -1,8 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
 import { PAYMENT_METHODS } from "./order";
-import type { Order } from "./order";
-import { STORES } from "./site";
 
 export type OrderStatus =
   | "new"
@@ -31,60 +29,6 @@ export const STATUS_FLOW: OrderStatus[] = [
 
 export function paymentLabel(id: string | null) {
   return PAYMENT_METHODS.find((p) => p.id === id)?.label ?? id ?? "—";
-}
-
-/** Persiste o pedido no banco. Falhas não bloqueiam a confirmação para o cliente. */
-export async function persistOrder(order: Order): Promise<boolean> {
-  try {
-    let storeId: string | null = null;
-    if (order.customer.fulfillment === "retirada") {
-      const storeName = STORES.find((s) => s.slug === order.customer.storeSlug)?.name;
-      if (storeName) {
-        const { data } = await supabase
-          .from("stores")
-          .select("id")
-          .eq("name", storeName)
-          .maybeSingle();
-        storeId = data?.id ?? null;
-      }
-    }
-
-    const { data: created, error } = await supabase
-      .from("orders")
-      .insert({
-        order_number: order.number,
-        customer_name: order.customer.name,
-        customer_phone: order.customer.phone,
-        order_type: order.mode === "atacado" ? "Atacado" : "Varejo",
-        fulfillment_type: order.customer.fulfillment === "retirada" ? "Pickup" : "Delivery",
-        store_id: storeId,
-        delivery_address:
-          order.customer.fulfillment === "entrega" ? (order.customer.address ?? null) : null,
-        payment_method: order.customer.payment,
-        subtotal: order.total,
-        delivery_fee: 0,
-        total: order.total,
-        status: "new",
-        notes: order.customer.note || null,
-      })
-      .select("id")
-      .single();
-
-    if (error || !created) return false;
-
-    const { error: itemsError } = await supabase.from("order_items").insert(
-      order.items.map((i) => ({
-        order_id: created.id,
-        product_name: i.name,
-        quantity: i.qty,
-        unit_price: i.unitPrice,
-        subtotal: i.subtotal,
-      })),
-    );
-    return !itemsError;
-  } catch {
-    return false;
-  }
 }
 
 export type AdminOrder = {

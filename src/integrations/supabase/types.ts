@@ -140,8 +140,11 @@ export type Database = {
           image_url: string | null
           name: string
           price: number | null
+          slug: string | null
           unit: string
           updated_at: string
+          wholesale_min: number
+          wholesale_price: number | null
         }
         Insert: {
           available?: boolean
@@ -152,8 +155,11 @@ export type Database = {
           image_url?: string | null
           name: string
           price?: number | null
+          slug?: string | null
           unit?: string
           updated_at?: string
+          wholesale_min?: number
+          wholesale_price?: number | null
         }
         Update: {
           available?: boolean
@@ -164,8 +170,11 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number | null
+          slug?: string | null
           unit?: string
           updated_at?: string
+          wholesale_min?: number
+          wholesale_price?: number | null
         }
         Relationships: []
       }

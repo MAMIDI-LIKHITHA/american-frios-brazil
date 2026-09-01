@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useState } from "react";
 import { CheckCircle2, Trash2 } from "lucide-react";
 
@@ -6,16 +8,15 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { QuantityStepper } from "@/components/QuantityStepper";
 import { WaIcon } from "@/components/WhatsAppButton";
 import { useCart } from "@/lib/cart";
+import { createOrder } from "@/lib/checkout.functions";
 import {
   PAYMENT_METHODS,
   brl,
-  buildOrder,
   checkoutSchema,
   orderWhatsAppLink,
   type CheckoutData,
   type Order,
 } from "@/lib/order";
-import { persistOrder } from "@/lib/orders-db";
 import { STORES } from "@/lib/site";
 
 const description =
@@ -52,11 +53,13 @@ function CarrinhoPage() {
   const [form, setForm] = useState<CheckoutData>(emptyForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [order, setOrder] = useState<Order | null>(null);
+  const [sending, setSending] = useState(false);
+  const submitOrder = useServerFn(createOrder);
 
   const set = <K extends keyof CheckoutData>(key: K, value: CheckoutData[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = checkoutSchema.safeParse(form);
     if (!parsed.success) {
@@ -69,11 +72,47 @@ function CarrinhoPage() {
       return;
     }
     setErrors({});
-    const created = buildOrder(lines, mode, parsed.data);
-    void persistOrder(created);
-    setOrder(created);
-    clear();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const customer = parsed.data;
+    setSending(true);
+    try {
+      const result = await submitOrder({
+        data: {
+          mode,
+          items: lines.map((l) => ({ slug: l.product.id, qty: l.qty })),
+          customer: {
+            name: customer.name,
+            phone: customer.phone,
+            fulfillment: customer.fulfillment,
+            address: customer.address || undefined,
+            storeName:
+              STORES.find((s) => s.slug === customer.storeSlug)?.name || undefined,
+            payment: customer.payment,
+            note: customer.note || undefined,
+          },
+        },
+      });
+
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+
+      // Pedido gravado com sucesso no banco — só então confirmamos e limpamos o carrinho.
+      setOrder({
+        number: result.orderNumber,
+        createdAt: new Date().toISOString(),
+        mode,
+        total: result.total,
+        items: result.items,
+        customer,
+      });
+      clear();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      toast.error("Não foi possível enviar o pedido. Verifique sua conexão e tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (order) return <Confirmation order={order} />;
@@ -266,8 +305,12 @@ function CarrinhoPage() {
               />
             </Field>
 
-            <button type="submit" className="btn-base btn-brand mt-5 w-full">
-              Enviar pedido · {brl(total)}
+            <button
+              type="submit"
+              disabled={sending}
+              className="btn-base btn-brand mt-5 w-full disabled:opacity-70"
+            >
+              {sending ? "Enviando pedido…" : `Enviar pedido · ${brl(total)}`}
             </button>
           </form>
         </div>
