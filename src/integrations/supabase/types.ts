@@ -132,12 +132,14 @@ export type Database = {
       }
       products: {
         Row: {
+          active: boolean
           available: boolean
           category: string
           created_at: string
           description: string | null
           id: string
           image_url: string | null
+          in_stock: boolean
           name: string
           price: number | null
           slug: string | null
@@ -147,12 +149,14 @@ export type Database = {
           wholesale_price: number | null
         }
         Insert: {
+          active?: boolean
           available?: boolean
           category: string
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
+          in_stock?: boolean
           name: string
           price?: number | null
           slug?: string | null
@@ -162,12 +166,14 @@ export type Database = {
           wholesale_price?: number | null
         }
         Update: {
+          active?: boolean
           available?: boolean
           category?: string
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
+          in_stock?: boolean
           name?: string
           price?: number | null
           slug?: string | null
