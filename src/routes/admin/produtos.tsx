@@ -293,11 +293,29 @@ function AdminProductsPage() {
                     <StockBadge inStock={p.in_stock} />
                     <ActiveBadge active={p.active} />
                   </div>
+                  <button
+                    onClick={() => {
+                      setEditing(p);
+                      setFormOpen(true);
+                    }}
+                    className="mt-3 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                  >
+                    Editar
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </>
+      )}
+
+      {formOpen && (
+        <ProductForm
+          product={editing}
+          categories={categories}
+          onClose={() => setFormOpen(false)}
+          onSaved={() => void productsQuery.refetch()}
+        />
       )}
     </AdminShell>
   );
