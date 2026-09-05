@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ImageIcon } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { isCurrentUserAdmin } from "@/lib/admin";
 import { brl } from "@/lib/order";
 import {
@@ -51,6 +52,8 @@ function AdminProductsPage() {
   const [category, setCategory] = useState<string>("all");
   const [sort, setSort] = useState<SortOption>("name-asc");
   const [imageUrls, setImageUrls] = useState<Record<string, string | null>>({});
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<AdminProduct | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["admin-products"],
@@ -135,12 +138,23 @@ function AdminProductsPage() {
       title="Produtos"
       subtitle="Catálogo completo: estoque, ativação e preços."
       actions={
-        <button
-          onClick={() => void productsQuery.refetch()}
-          className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
-        >
-          Atualizar
-        </button>
+        <>
+          <button
+            onClick={() => void productsQuery.refetch()}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+          >
+            Atualizar
+          </button>
+          <button
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Novo produto
+          </button>
+        </>
       }
     >
       <div className="mt-6 grid gap-3 rounded-2xl border border-border bg-card p-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -211,6 +225,7 @@ function AdminProductsPage() {
                   <th className="px-3 py-3">Preço / unidade</th>
                   <th className="px-3 py-3">Estoque</th>
                   <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,6 +250,17 @@ function AdminProductsPage() {
                     </td>
                     <td className="px-3 py-3">
                       <ActiveBadge active={p.active} />
+                    </td>
+                    <td className="px-3 py-3 text-right">
+                      <button
+                        onClick={() => {
+                          setEditing(p);
+                          setFormOpen(true);
+                        }}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                      >
+                        Editar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -267,11 +293,29 @@ function AdminProductsPage() {
                     <StockBadge inStock={p.in_stock} />
                     <ActiveBadge active={p.active} />
                   </div>
+                  <button
+                    onClick={() => {
+                      setEditing(p);
+                      setFormOpen(true);
+                    }}
+                    className="mt-3 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                  >
+                    Editar
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </>
+      )}
+
+      {formOpen && (
+        <ProductForm
+          product={editing}
+          categories={categories}
+          onClose={() => setFormOpen(false)}
+          onSaved={() => void productsQuery.refetch()}
+        />
       )}
     </AdminShell>
   );

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/logo.png.asset.json";
 import { WhatsAppButton } from "./WhatsAppButton";
 import { CartButton } from "./CartDrawer";
 
@@ -23,7 +23,7 @@ export function SiteHeader() {
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
         <Link to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <img
-            src={logo}
+            src={logo.url}
             alt="América Frios"
             width={44}
             height={44}

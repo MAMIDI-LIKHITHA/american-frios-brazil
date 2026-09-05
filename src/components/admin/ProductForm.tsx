@@ -73,12 +73,19 @@ export function ProductForm({
     const finalCategory = (newCategory.trim() || category).trim();
     const trimmedName = name.trim();
 
-    if (!trimmedName) return toast.error("Informe o nome do produto.");
-    if (!finalCategory) return toast.error("Informe a categoria.");
+    if (!trimmedName) {
+      toast.error("Informe o nome do produto.");
+      return;
+    }
+    if (!finalCategory) {
+      toast.error("Informe a categoria.");
+      return;
+    }
 
     const parsedPrice = price.trim() === "" ? null : Number(price.replace(",", "."));
     if (parsedPrice !== null && (!Number.isFinite(parsedPrice) || parsedPrice < 0)) {
-      return toast.error("Preço inválido.");
+      toast.error("Preço inválido.");
+      return;
     }
 
     setSaving(true);

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Phone, Mail } from "lucide-react";
 
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/logo.png.asset.json";
 import { CONTACT, STORES } from "@/lib/site";
 
 export function SiteFooter() {
@@ -11,7 +11,7 @@ export function SiteFooter() {
         <div>
           <div className="flex items-center gap-2.5">
             <img
-              src={logo}
+              src={logo.url}
               alt="América Frios"
               width={44}
               height={44}

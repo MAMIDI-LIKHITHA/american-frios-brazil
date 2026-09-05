@@ -26,7 +26,7 @@ export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
 export type ProductInput = {
-  id?: string;
+  id?: string | undefined;
   name: string;
   category: string;
   description: string | null;
