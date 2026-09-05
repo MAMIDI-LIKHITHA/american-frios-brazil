@@ -251,6 +251,17 @@ function AdminProductsPage() {
                     <td className="px-3 py-3">
                       <ActiveBadge active={p.active} />
                     </td>
+                    <td className="px-3 py-3 text-right">
+                      <button
+                        onClick={() => {
+                          setEditing(p);
+                          setFormOpen(true);
+                        }}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                      >
+                        Editar
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
