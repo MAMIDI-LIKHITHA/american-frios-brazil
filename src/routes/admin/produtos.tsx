@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ImageIcon } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { isCurrentUserAdmin } from "@/lib/admin";
 import { brl } from "@/lib/order";
 import {
