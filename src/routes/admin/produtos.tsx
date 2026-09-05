@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ProductForm } from "@/components/admin/ProductForm";
@@ -9,6 +10,7 @@ import { isCurrentUserAdmin } from "@/lib/admin";
 import { brl } from "@/lib/order";
 import {
   PRODUCT_CATEGORIES,
+  deactivateProduct,
   fetchAdminProducts,
   resolveProductImageUrl,
   type AdminProduct,
@@ -54,12 +56,25 @@ function AdminProductsPage() {
   const [imageUrls, setImageUrls] = useState<Record<string, string | null>>({});
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<AdminProduct | null>(null);
+  const [deleting, setDeleting] = useState<AdminProduct | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["admin-products"],
     queryFn: fetchAdminProducts,
   });
   const products = productsQuery.data ?? [];
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deactivateProduct(id),
+    onSuccess: () => {
+      toast.success("Produto desativado. Ele não aparece mais no catálogo.");
+      setDeleting(null);
+      void productsQuery.refetch();
+    },
+    onError: () => {
+      toast.error("Não foi possível excluir o produto. Tente novamente.");
+    },
+  });
 
   useEffect(() => {
     if (products.length === 0) return;
@@ -252,15 +267,25 @@ function AdminProductsPage() {
                       <ActiveBadge active={p.active} />
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <button
-                        onClick={() => {
-                          setEditing(p);
-                          setFormOpen(true);
-                        }}
-                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
-                      >
-                        Editar
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => {
+                            setEditing(p);
+                            setFormOpen(true);
+                          }}
+                          className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                        >
+                          Editar
+                        </button>
+                        {p.active && (
+                          <button
+                            onClick={() => setDeleting(p)}
+                            className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-accent"
+                          >
+                            Excluir
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -293,15 +318,25 @@ function AdminProductsPage() {
                     <StockBadge inStock={p.in_stock} />
                     <ActiveBadge active={p.active} />
                   </div>
-                  <button
-                    onClick={() => {
-                      setEditing(p);
-                      setFormOpen(true);
-                    }}
-                    className="mt-3 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
-                  >
-                    Editar
-                  </button>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => {
+                        setEditing(p);
+                        setFormOpen(true);
+                      }}
+                      className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                    >
+                      Editar
+                    </button>
+                    {p.active && (
+                      <button
+                        onClick={() => setDeleting(p)}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-accent"
+                      >
+                        Excluir
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -316,6 +351,46 @@ function AdminProductsPage() {
           onClose={() => setFormOpen(false)}
           onSaved={() => void productsQuery.refetch()}
         />
+      )}
+
+      {deleting && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirmar exclusão"
+        >
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <Trash2 className="h-5 w-5" />
+              </div>
+              <h2 className="text-lg font-bold text-foreground">Excluir produto?</h2>
+            </div>
+            <p className="mt-3 text-sm text-muted-foreground">
+              <strong className="text-foreground">{deleting.name}</strong> será desativado e
+              deixará de aparecer no catálogo e no checkout. O produto não é apagado do
+              sistema e os pedidos já realizados não são afetados. Você pode reativá-lo
+              depois em Editar.
+            </p>
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setDeleting(null)}
+                disabled={deleteMutation.isPending}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-accent disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => deleteMutation.mutate(deleting.id)}
+                disabled={deleteMutation.isPending}
+                className="rounded-lg bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Excluindo…" : "Sim, excluir"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </AdminShell>
   );

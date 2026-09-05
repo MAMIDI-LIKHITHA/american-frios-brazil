@@ -93,6 +93,17 @@ export async function saveProduct(input: ProductInput) {
   if (error) throw error;
 }
 
+/** Soft delete: marks the product inactive (never removes the row).
+ *  Past orders are unaffected because order_items keeps its own name/price
+ *  snapshot. available=false removes it from the public catalog. */
+export async function deactivateProduct(id: string) {
+  const { error } = await supabase
+    .from("products")
+    .update({ active: false, available: false })
+    .eq("id", id);
+  if (error) throw error;
+}
+
 export async function fetchAdminProducts() {
   const { data, error } = await supabase
     .from("products")
