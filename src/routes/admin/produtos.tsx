@@ -138,12 +138,23 @@ function AdminProductsPage() {
       title="Produtos"
       subtitle="Catálogo completo: estoque, ativação e preços."
       actions={
-        <button
-          onClick={() => void productsQuery.refetch()}
-          className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
-        >
-          Atualizar
-        </button>
+        <>
+          <button
+            onClick={() => void productsQuery.refetch()}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+          >
+            Atualizar
+          </button>
+          <button
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Novo produto
+          </button>
+        </>
       }
     >
       <div className="mt-6 grid gap-3 rounded-2xl border border-border bg-card p-4 sm:grid-cols-2 lg:grid-cols-4">
