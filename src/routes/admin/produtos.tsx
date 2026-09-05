@@ -56,12 +56,25 @@ function AdminProductsPage() {
   const [imageUrls, setImageUrls] = useState<Record<string, string | null>>({});
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<AdminProduct | null>(null);
+  const [deleting, setDeleting] = useState<AdminProduct | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["admin-products"],
     queryFn: fetchAdminProducts,
   });
   const products = productsQuery.data ?? [];
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deactivateProduct(id),
+    onSuccess: () => {
+      toast.success("Produto desativado. Ele não aparece mais no catálogo.");
+      setDeleting(null);
+      void productsQuery.refetch();
+    },
+    onError: () => {
+      toast.error("Não foi possível excluir o produto. Tente novamente.");
+    },
+  });
 
   useEffect(() => {
     if (products.length === 0) return;
@@ -254,15 +267,25 @@ function AdminProductsPage() {
                       <ActiveBadge active={p.active} />
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <button
-                        onClick={() => {
-                          setEditing(p);
-                          setFormOpen(true);
-                        }}
-                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
-                      >
-                        Editar
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => {
+                            setEditing(p);
+                            setFormOpen(true);
+                          }}
+                          className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                        >
+                          Editar
+                        </button>
+                        {p.active && (
+                          <button
+                            onClick={() => setDeleting(p)}
+                            className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-accent"
+                          >
+                            Excluir
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -295,15 +318,25 @@ function AdminProductsPage() {
                     <StockBadge inStock={p.in_stock} />
                     <ActiveBadge active={p.active} />
                   </div>
-                  <button
-                    onClick={() => {
-                      setEditing(p);
-                      setFormOpen(true);
-                    }}
-                    className="mt-3 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
-                  >
-                    Editar
-                  </button>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => {
+                        setEditing(p);
+                        setFormOpen(true);
+                      }}
+                      className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent"
+                    >
+                      Editar
+                    </button>
+                    {p.active && (
+                      <button
+                        onClick={() => setDeleting(p)}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-accent"
+                      >
+                        Excluir
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
