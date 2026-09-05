@@ -225,6 +225,7 @@ function AdminProductsPage() {
                   <th className="px-3 py-3">Preço / unidade</th>
                   <th className="px-3 py-3">Estoque</th>
                   <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody>
