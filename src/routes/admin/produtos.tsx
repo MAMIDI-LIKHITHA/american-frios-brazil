@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ProductForm } from "@/components/admin/ProductForm";
@@ -9,6 +10,7 @@ import { isCurrentUserAdmin } from "@/lib/admin";
 import { brl } from "@/lib/order";
 import {
   PRODUCT_CATEGORIES,
+  deactivateProduct,
   fetchAdminProducts,
   resolveProductImageUrl,
   type AdminProduct,
