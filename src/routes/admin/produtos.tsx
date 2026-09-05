@@ -52,6 +52,8 @@ function AdminProductsPage() {
   const [category, setCategory] = useState<string>("all");
   const [sort, setSort] = useState<SortOption>("name-asc");
   const [imageUrls, setImageUrls] = useState<Record<string, string | null>>({});
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<AdminProduct | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["admin-products"],
